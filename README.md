@@ -3,89 +3,34 @@
 
 
 <p align="center">
-<img style="width:90%;" alt="thumbnail" src="assets/magmax-teaser.png">
+<img style="width:90%;" alt="thumbnail" src="assets/pipeline_v3.png">
 </p>
 
-> **Abstract:** This paper introduces a continual learning approach named MagMax, which utilizes model merging to enable large pre-trained models to continuously learn from new data without forgetting previously acquired knowledge. Distinct from traditional continual learning methods that aim to reduce forgetting during task training, MagMax combines sequential fine-tuning with a maximum magnitude weight selection for effective knowledge integration across tasks. Our initial contribution is an extensive examination of model merging techniques, revealing that simple approaches like weight averaging and random weight selection surprisingly hold up well in various continual learning contexts. More importantly, we present MagMax, a novel model-merging strategy that enables continual learning of large pre-trained models for successive tasks. Our thorough evaluation demonstrates the superiority of MagMax in various scenarios, including class- and domain-incremental learning settings.
+> Different initialization strategies' continual learning pipelines (a-c) and influence of the distribution in parameter space (d-e), taking Task 3 as example. 
+In (a-c), $\theta$ represents model parameter, $\tau$ represents task vector parameter. Blue, green, and yellow blocks represent the parameter related to Task 1, 2, and 3, respectively. Yellow arrow shows the initialization of Task 3's finetuning trajectory. Black and red dashed contour lines indicate the to-be-merged task vectors and merging-product task vectors. In (d-f), colored ellipses represent low-loss regions for the corresponding tasks. (d) Independent Initialization (Ind-Init) from the pretrained model makes the task vector of Task 3 distributed across the entire yellow region, causing the merged model (red dashed circle) to be unbiased but with high variance. (e) Sequential Initialization (Seq-Init) starts training from Task 2 (green ellipse), the resulting task vector will be distributed in the area near Task 2 within Task 3's low-loss region. When merged with previous task vectors, this yields a final distribution with low variance, but will also introduce bias among previous tasks. (f) Equilibrium Initialization (Equi-Init) causes the training trajectory to converge to areas within Task 3's low-loss region that are close to Task 1 and Task 2, resulting in a low-variance and less biased task vector, and consequently a low-variance and less biased merged task vector.
 
-
-## Installation
-
-For a quick installation use the following commands:
-```bash
-conda env create
-conda activate magmax
-```
-
-If it does not work, the env was created by the following commands:
-```bash
-conda create --name magmax python=3.10
-conda activate magmax
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-pip install wandb tqdm open_clip_torch scipy
-```
+## Abstract 
+Leveraging large pretrained models for continual learning remains challenging due to high variance, task bias, and parameter interference. We introduce \textbf{S}parsified \textbf{S}ynergistic Merging with \textbf{E}quilibrium Initialization \textbf{(SSE)}, a unified framework that integrates three key components: Equilibrium Initialization, which anchors each new task in a consolidated low-loss region to reduce variance; Sparse Finetuning, which confines weight updates to a small subset to alleviate bias; and Synergistic Merging, which learns optimal blending coefficients to preserve parameter interdependencies and prevent interference. In the exemplar-free setting, SSE achieves superior performance on accuracy and forgetting measure. When employing small memory buffers (1–3 exemplars per class), SSE achieves an additional 1.4–2.8\% gain on ImageNet-R and a 2.1–3.5\% gain on CIFAR100. These results demonstrate that SSE outperforms state-of-the-art continual learning methods, offering a practical solution for lifelong learning with large pretrained models.
 
 
 ## Usage
 
-The code is separated into two parts:
-* training - these are the scripts `finetune_*`, `ewc*` and `lwf*`
-* merging - these are the scripts `merge_*`
-
-### Class-incremental learning (CIL)
-
-For a single run, e.g. sequential fine-tuning (10 epochs) and merging on CIFAR100/20 (seed=5), run the script:
+For continual learning on CIFAR100 (10 epochs, 5 splits, seed=5), sparsity constraint weight = 1e-2, validset ratio = 0.006, train merging coefs epoch = 10, run the script:
 ```bash
-bash scripts/CIL/finetune_seq.sh ViT-B-16 CIFAR100 10 20 5
+bash scripts/CIL/finetune_merged.sh ViT-B-16 CIFAR100 10 5 5 learned pretrained 1e-2 0.006 10
 ```
 
-To reproduce all the CIL results simply run:
-```bash
-bash scripts/CIL/all.sh
-```
+## Experiment Results
 
-### Domain-incremental learning (DIL)
-
-For a single run, e.g. sequential fine-tuning (10 epochs) and merging on ImageNet-R (seed=5), run the script:
-```bash
-bash scripts/DIL/finetune_seq.sh ViT-B-16 ImageNetR 10 5
-```
-
-To reproduce all the DIL results simply run:
-```bash
-bash scripts/DIL/all.sh
-```
-
-### 8 datasets
-
-For a single run, e.g. sequential fine-tuning and merging on 8 datasets (seed=5), run the script:
-```bash
-bash scripts/8ds/finetune_8ds_seq.sh ViT-B-16 5
-```
-
-To reproduce all the 8 datasets results simply run:
-```bash
-bash scripts/8ds/all.sh
-```
-
-
-### Tips
-
-By default, the code will run on **all available GPUs**. Use `CUDA_VISIBLE_DEVICES=X` to restrict GPU usage.
-
+<p align="center">
+<img style="width:90%;" alt="thumbnail" src="assets/tab_compare_baselines.png">
+</p>
 
 ## Credits
 
-This repo is based on [task_vectors](https://github.com/mlfoundations/task_vectors) and also utilizes some code from [ties-merging](https://github.com/prateeky2806/ties-merging).
+This repo is based on the following works:
 
-
-## Citation
-If you find this work useful, please consider citing it:
-```bibtex
-@article{marczak2024magmax,
-    title   = {MagMax: Leveraging Model Merging for Seamless Continual Learning},
-    author  = {Daniel Marczak and Bartłomiej Twardowski and Tomasz Trzciński and Sebastian Cygert},
-    booktitle = {European Conference on Computer Vision (ECCV)},
-    year    = {2024}
-}
-```
+- [MagMax](https://github.com/danielm1405/magmax)
+- [Localize-and-Stitch](https://github.com/uiuctml/Localize-and-Stitch)
+- [task_vectors](https://github.com/mlfoundations/task_vectors)
+- [ties-merging](https://github.com/prateeky2806/ties-merging) 
