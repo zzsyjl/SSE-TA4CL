@@ -1,12 +1,6 @@
-# MagMax: Leveraging Model Merging for Seamless Continual Learning
+# Beyond Merging: A Three-Phase Framework for Continual Learning via Sparsified Synergistic Merging with Equilibrium Initialization
 
-This is the official repository for the paper:
 
-> **[MagMax: Leveraging Model Merging for Seamless Continual Learning](https://arxiv.org/abs/2407.06322)**<br>
-> [Daniel Marczak](https://scholar.google.com/citations?user=Vs4kBzQAAAAJ&hl=en), [Bartłomiej Twardowski](https://scholar.google.com/citations?hl=en&user=8yywECgAAAAJ), [Tomasz Trzciński](https://scholar.google.com/citations?hl=en&user=bJMRBFoAAAAJ), [Sebastian Cygert](https://scholar.google.com/citations?hl=en&user=wLH9PP8AAAAJ)<br>
-> ECCV 2024
-
-**TL;DR**: MagMax, which consists of simple sequential fine-tuning and merging with maximum magnitude weight selection, outperforms traditional continual learning methods.
 
 <p align="center">
 <img style="width:90%;" alt="thumbnail" src="assets/magmax-teaser.png">
